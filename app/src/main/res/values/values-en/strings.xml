@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Entrega1_AlbaArsuaga</string>
+
+    <!-- Escribimos todos los strings -->
+
+    <!-- Pantalla "registro" -->
+    <string name="textViewResgistroLogin">SIGN IN</string>
+    <string name="textViewNombreUsu">Introduce your username:</string>
+    <string name="textViewContra1">Introduce your password:</string>
+    <string name="textViewContra2">Repeat your password:</string>
+    <string name="buttonRegistrarse">Sign in</string>
+    <string name="buttonIniciarSesion">Log in</string>
+    <string name="buttonCambiarIdioma">Change language</string>
+
+    <!-- Pantalla "login" -->
+    <string name="textView1L">Introduce your username:</string>
+    <string name="textView2L">Introduce your password:</string>
+    <string name="buttonIniciarSesionL">Log in</string>
+
+    <!-- Pantalla "tareas" -->
+    <string name="textViewdDeberes">TASKS</string>
+    <string name="botonElegir">Add</string>
+
+    <!-- Pantalla "examenes" -->
+    <string name="textViewExamenes">EXAMS</string>
+    <string name="buttonGuardarE">Save</string>
+    <string name="textViewE">Enter here the details of your next exams:</string>
+
+    <!-- Pantalla "nueva_tarea" -->
+    <string name="textViewT">TASKS</string>
+    <string name="textViewT2">Task code:</string>
+    <string name="textViewNombreAsigT">Name of the subject:</string>
+    <string name="textViewTareaT">Task:</string>
+    <string name="buttonAnadirT">Accept</string>
+    <string name="buttonEditarT">Save changes</string>
+    <string name="buttonEliminarT">Delete</string>
+
+</resources>

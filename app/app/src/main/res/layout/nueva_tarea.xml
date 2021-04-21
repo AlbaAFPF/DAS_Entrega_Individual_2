@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textViewT"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="30dp"
+            android:gravity="center"
+            android:text="@string/textViewT"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:typeface="normal" />
+
+        <TextView
+            android:id="@+id/textViewT2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:text="@string/textViewT2" />
+
+        <EditText
+            android:id="@+id/editTextCodigoT"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginBottom="15dp"
+            android:inputType="textPersonName" />
+
+        <TextView
+            android:id="@+id/textViewNombreAsigT"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:text="@string/textViewNombreAsigT" />
+
+        <EditText
+            android:id="@+id/editTextNombreAsig"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginBottom="15dp"
+            android:inputType="textPersonName" />
+
+        <TextView
+            android:id="@+id/textViewTareaT"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:text="@string/textViewTareaT"/>
+
+        <EditText
+            android:id="@+id/editTextNombreDocente"
+            android:layout_width="match_parent"
+            android:layout_marginHorizontal="20dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:layout_marginBottom="30dp"
+            android:inputType="textPersonName" />
+
+        <Button
+            android:id="@+id/buttonAnadirT"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/buttonAnadirT" />
+
+        <Button
+            android:id="@+id/buttonEditarT"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/buttonEditarT" />
+
+        <Button
+            android:id="@+id/buttonEliminarT"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/buttonEliminarT" />
+
+    </LinearLayout>
+</RelativeLayout>

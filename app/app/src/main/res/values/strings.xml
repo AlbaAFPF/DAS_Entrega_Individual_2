@@ -1,0 +1,39 @@
+<resources>
+    <string name="app_name">Entrega1_AlbaArsuaga</string>
+
+    <!-- Escribimos todos los strings -->
+
+    <!-- Pantalla "Registro" -->
+    <string name="textViewResgistroLogin">REGISTRO</string>
+    <string name="textViewNombreUsu">Introduzca su nombre de usuario:</string>
+    <string name="textViewContra1">Introduzca su contraseña:</string>
+    <string name="textViewContra2">Repita la contraseña:</string>
+    <string name="buttonRegistrarse">Registrarse</string>
+    <string name="buttonIniciarSesion">Iniciar sesión</string>
+    <string name="buttonCambiarIdioma">Cambiar idioma</string>
+
+    <!-- Pantalla "login" -->
+    <string name="textView1L">Introduzca su nombre de usuario:</string>
+    <string name="textView2L">Introduzca su contraseña:</string>
+    <string name="buttonIniciarSesionL">Iniciar sesión</string>
+
+    <!-- Pantalla "tareas" -->
+    <string name="textViewdDeberes">TAREAS</string>
+    <string name="botonElegir">Añadir</string>
+
+    <!-- Pantalla "examenes" -->
+    <string name="textViewExamenes">EXÁMENES</string>
+    <string name="buttonGuardarE">Guardar</string>
+    <string name="textViewE">Introduce aquí los detalles de tus próximos exámenes:</string>
+
+    <!-- Pantalla "nueva_tarea" -->
+    <string name="textViewT">TAREA</string>
+    <string name="textViewT2">Código de la tarea:</string>
+    <string name="textViewNombreAsigT">Nombre de la asignatura:</string>
+    <string name="textViewTareaT">Tarea a realizar:</string>
+    <string name="buttonAnadirT">Aceptar</string>
+    <string name="buttonEditarT">Guardar cambios</string>
+    <string name="buttonEliminarT">Eliminar</string>
+
+
+</resources>
