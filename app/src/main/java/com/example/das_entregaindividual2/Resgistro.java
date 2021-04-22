@@ -20,7 +20,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 public class Resgistro extends AppCompatActivity {
 
@@ -30,6 +40,10 @@ public class Resgistro extends AppCompatActivity {
 
     // Instanciamos el gestorDB
     GestorBD bd;
+
+    private String URL = "http://192.168.0.112/DAS_Entrega2/registro.php";
+
+    private String nombreUsu, contra, contra2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,59 +67,7 @@ public class Resgistro extends AppCompatActivity {
         buttonRegistrarse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Obtenemos lo insertado en los editText
-                String nombreUsu = editTextNombreUsuario.getText().toString();
-                String contra = editTextContrasena.getText().toString();
-                String contra2 = editTextContrasena2.getText().toString();
-
-                // Si el usuario no ha insertado datos
-                if(nombreUsu.equals("") | contra.equals("") | contra2.equals("")){
-                    // Se le pide que los inserte
-                    Toast.makeText(Resgistro.this, "Introduzca sus datos, por favor.", Toast.LENGTH_LONG).show();
-                }else{
-                    // Si ha insertado, se compruba que estén bien
-                    if(contra.equals(contra2)){
-                        // Si las contraseñas introducidas son las mismas
-                        // Comprobamos si existe el usuario introducido
-                        Boolean comprobarUsu = bd.existeNombreUsuario(nombreUsu);
-
-                        if (comprobarUsu==false){
-                            // Insertamos los datos en la base de datos
-                            bd.agregarLogin(nombreUsu, contra);
-
-                            // Notificamos al usuario que se ha registrado correctamente
-
-                            // Configuración del canal para notidicaciones
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                NotificationChannel elCanal = new NotificationChannel("IdCanal", "NombreCanal", NotificationManager.IMPORTANCE_DEFAULT);
-                                NotificationManager elManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-                                elManager.createNotificationChannel(elCanal);
-                            }
-
-                            // Crear el builder
-                            NotificationCompat.Builder elBuilder = new NotificationCompat.Builder(getApplicationContext(), "IdCanal");
-                            elBuilder.setContentTitle("Registro completo.");
-                            elBuilder.setContentText("¡Te has registrado con éxito!");
-                            elBuilder.setSmallIcon(R.drawable.ic_launcher_background);
-                            elBuilder.setAutoCancel(true);
-
-                            // Notificar al usuario
-                            NotificationManagerCompat elManagerCompat = NotificationManagerCompat.from(getApplicationContext());
-                            elManagerCompat.notify(1,elBuilder.build());
-
-                            // Redirigimos a la página principal
-                            Intent intent = new Intent (v.getContext(), Login.class);
-                            startActivityForResult(intent, 0);
-                        }else{
-                            // Informamos al usuario de que el nombre que ha introducido ya pertecene a la BD
-                            Toast.makeText(Resgistro.this, "Este nombre de usuario ya está registrado.", Toast.LENGTH_LONG).show();
-                        }
-                    }else{
-                        // Informamos al usuario de que las contraseñas introducidas no son las mismas
-                        Toast.makeText(Resgistro.this, "Las contraseñas no coinciden.", Toast.LENGTH_LONG).show();
-                    }
-                }
-
+                save(v);
             }
         });
 
@@ -129,6 +91,48 @@ public class Resgistro extends AppCompatActivity {
         });
     }
 
+
+    public void save (View view){
+        nombreUsu = editTextNombreUsuario.getText().toString().trim();
+        contra = editTextContrasena.getText().toString().trim();
+        contra2 = editTextContrasena2.getText().toString().trim();
+
+        if(!contra.equals(contra2)){
+            Toast.makeText(Resgistro.this, "Las contraseñas no coinciden.", Toast.LENGTH_LONG).show();
+
+        }else if(!nombreUsu.equals("") && !contra.equals("") && !contra2.equals("")){
+
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    Toast.makeText(Resgistro.this, "AAAAAAAA"+response, Toast.LENGTH_LONG).show();
+
+                    if (response.equals("success")) {
+                        Intent intent = new Intent (view.getContext(), Login.class);
+                        startActivityForResult(intent, 0);
+                    }else{
+                        Toast.makeText(Resgistro.this, "La respuesta ha sido: "+response, Toast.LENGTH_LONG).show();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(Resgistro.this, error.toString().trim(), Toast.LENGTH_LONG).show();
+
+                }
+            }) {
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    Map<String, String> data = new HashMap<>();
+                    data.put("nombre", nombreUsu);
+                    data.put("contrasena", contra);
+                    return data;
+                }
+            };
+            RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+            requestQueue.add(stringRequest);
+        }
+    }
 
 
     // Método para el cambio de idioma

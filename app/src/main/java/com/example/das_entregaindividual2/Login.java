@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.ActionBar;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.work.ListenableWorker;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -20,7 +21,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 public class Login extends AppCompatActivity {
 
@@ -28,8 +39,11 @@ public class Login extends AppCompatActivity {
     EditText editTextNombreUsuarioL, editTextContrasenaL;
     Button buttonIniciarSesionL;
 
-    // Instanciamos el gestorDB
-    GestorBD bd;
+
+    private String URL = "http://192.168.0.112/DAS_Entrega2/login.php";
+
+    String nombreUsuL, contraL;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,60 +57,61 @@ public class Login extends AppCompatActivity {
 
         buttonIniciarSesionL= (Button)findViewById(R.id.buttonIniciarSesionL);
 
-        bd = new GestorBD(getApplicationContext());
 
         // Botón de iniciar sesión
         buttonIniciarSesionL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Obtenemos lo insertado en los editText
-                String nombreUsuL = editTextNombreUsuarioL.getText().toString();
-                String contraL = editTextContrasenaL.getText().toString();
+                //Toast.makeText(Login.this, "HOLAAA1", Toast.LENGTH_LONG).show();
+                login(v);
 
-                // Si el usuario no ha insertado datos
-                if(nombreUsuL.equals("") | contraL.equals("")){
-                    // Se le pide que los inserte
-                    Toast.makeText(Login.this, "Introduzca sus datos, por favor.", Toast.LENGTH_LONG).show();
-                }else{
-                    // Si ha insertado, se comprueba que estén bien
-                    Boolean comprobarUsu = bd.comprobarUsuarioContrasema(nombreUsuL,contraL);
-
-                    // Si la contraseña está bien
-                    if(comprobarUsu == true){
-                        // Notificamos al usuario que ha iniciado sesión correctamente
-
-                        // Configuración del canal para notidicaciones
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            NotificationChannel elCanal = new NotificationChannel("IdCanal", "NombreCanal", NotificationManager.IMPORTANCE_DEFAULT);
-                            NotificationManager elManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-                            elManager.createNotificationChannel(elCanal);
-                        }
-
-                        // Crear el builder
-                        NotificationCompat.Builder elBuilder = new NotificationCompat.Builder(getApplicationContext(), "IdCanal");
-                        elBuilder.setContentTitle("Inicio de sesión completa.");
-                        elBuilder.setContentText("¡Has iniciado sesión con éxito!");
-                        elBuilder.setSmallIcon(R.drawable.ic_launcher_background);
-                        elBuilder.setAutoCancel(true);
-
-                        // Notificar al usuario
-                        NotificationManagerCompat elManagerCompat = NotificationManagerCompat.from(getApplicationContext());
-                        elManagerCompat.notify(1,elBuilder.build());
-
-                        // Redirigimos a la página principal
-                        Intent intent = new Intent (v.getContext(), MainActivity.class);
-                        startActivityForResult(intent, 0);
-
-                        // Si es correcto
-                    }else{
-                        // Se informa al usuario
-                        Toast.makeText(Login.this, "Datos incorrectos.", Toast.LENGTH_LONG).show();
-                    }
-                }
             }
+
         });
 
     }
+
+    public void login(View view){
+
+        // Obtenemos lo insertado en los editText
+        nombreUsuL = editTextNombreUsuarioL.getText().toString();
+        contraL = editTextContrasenaL.getText().toString();
+
+        // Si hay datos insertados
+        if(!nombreUsuL.equals("") && !contraL.equals("")) {
+
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+
+                    if (response.equals("success")) {
+                        Toast.makeText(Login.this, "HOLAAA3", Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(view.getContext(), MainActivity.class);
+                        startActivityForResult(intent, 0);
+                    }else{
+                        Toast.makeText(Login.this, "La respuesta ha sido: "+response, Toast.LENGTH_LONG).show();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(Login.this, error.toString().trim(), Toast.LENGTH_LONG).show();
+
+                }
+            }) {
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    Map<String, String> data = new HashMap<>();
+                    data.put("nombre", nombreUsuL);
+                    data.put("contrasena", contraL);
+                    return data;
+                }
+            };
+            RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+            requestQueue.add(stringRequest);
+        }
+    }
+
 
     private void fijarIdioma() {
         // Usamos Locale para forzar la localización desde dentro de la aplicación
