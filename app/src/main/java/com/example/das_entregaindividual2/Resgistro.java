@@ -9,11 +9,13 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,12 +29,20 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
 public class Resgistro extends AppCompatActivity {
+
+    private static final String CHANNEL_ID = "101";
 
     // Instanciamos los objetos para los campos y botones
     EditText editTextNombreUsuario, editTextContrasena, editTextContrasena2;
@@ -51,6 +61,11 @@ public class Resgistro extends AppCompatActivity {
         fijarIdioma();
         setContentView(R.layout.registro);
 
+        // Crear canal de notificaciones y obtener el token cada vez que se crea el app
+        createNotificationChannel();
+        getToken();
+        suscribirseFCM();
+
         // Asignamos los id a las variables
         editTextNombreUsuario= (EditText)findViewById(R.id.editTextNombreUsuario);
         editTextContrasena= (EditText)findViewById(R.id.editTextContrasena);
@@ -62,6 +77,12 @@ public class Resgistro extends AppCompatActivity {
         buttonCambiarIdioma= (Button)findViewById(R.id.buttonCambiarIdioma);
 
         bd = new GestorBD(getApplicationContext());
+
+
+
+
+
+
 
         // Botón de registrarse
         buttonRegistrarse.setOnClickListener(new View.OnClickListener() {
@@ -90,6 +111,53 @@ public class Resgistro extends AppCompatActivity {
             }
         });
     }
+
+
+    //----------------------
+    // Obtener el token
+    public void getToken(){
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnSuccessListener(new OnSuccessListener<InstanceIdResult>() {
+                    @Override
+                    public void onSuccess(InstanceIdResult instanceIdResult) {
+                        // El token se muestra en consola al ejecutar la aplicación
+                        Log.e("token", instanceIdResult.getToken());
+                    }
+                });
+    }
+
+    // Creamos el canal de notificaciones
+    // https://developer.android.com/training/notify-user/build-notification
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "canalNotificaciones";
+            String description = "Canal encargado de recibir las notificaciones de Firebase";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    private void suscribirseFCM (){
+        FirebaseMessaging.getInstance().subscribeToTopic("newsletter")
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Toast.makeText(Resgistro.this, "¡Suscrito!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
+    }
+
+
+    //----------------------
 
 
     public void save (View view){
