@@ -115,6 +115,10 @@ public class Resgistro extends AppCompatActivity {
                 });
     }
 
+    /**Extraído de developer.android.com
+     Pregunta: https://developer.android.com/training/notify-user/build-notification
+     Autor: developer.android.com
+     **/
     // Creamos el canal de notificaciones
     private void createNotificationChannel() {
         // Creamos el NotificationChannel para API mayores o iguales que 26
@@ -143,6 +147,12 @@ public class Resgistro extends AppCompatActivity {
                 });
     }
 
+    /**Basado en el código extraído de youtube.com
+     Pregunta: https://www.youtube.com/watch?v=vXK3hsXpt2I
+     Autor: El Estudio de ANDROFAST
+     Modificado por Alba Arsuaga, se ha mantenido la estructura pero se
+     ha modificado el contenido.
+     **/
     // Método para guardar el usuario en la BD remota
     public void guardarUsuario(View view){
         // Guardamos los editText de la interfaz en variables

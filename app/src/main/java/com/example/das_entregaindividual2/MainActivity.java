@@ -90,6 +90,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    /**Basado en el código extraído de developer.android.com
+     Pregunta: https://developer.android.com/training/scheduling/alarms
+     Autor: developer.android.com
+     Modificado por Alba Arsuaga, se ha mantenido varias sentencias pero
+     con modificaciones leves.
+     **/
     // Método para la fijación de la alarma
     private void setAlarm(Context context){
         // Cargamos lo que se ejecutará cuando "salte" la alarma
@@ -111,6 +117,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**Extraído de developer.android.com
+     Pregunta: https://developer.android.com/training/scheduling/alarms
+     Autor: developer.android.com
+     **/
     // Método para borrar la alarma
     private void unSetAlarma(){
         // Si existe el administrador y el intent

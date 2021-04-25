@@ -14,6 +14,10 @@ import com.google.firebase.messaging.RemoteMessage;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
+    /**Extraído de developer.android.com
+     Pregunta: https://developer.android.com/training/notify-user/build-notification
+     Autor: developer.android.com
+     **/
     // Método para la recepción de mensajes
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {

@@ -91,6 +91,12 @@ public class Camara extends AppCompatActivity  {
         return fotoen64;
     }
 
+    /**Basado en el código extraído de youtube.com
+     Pregunta: https://www.youtube.com/watch?v=vXK3hsXpt2I
+     Autor: El Estudio de ANDROFAST
+     Modificado por Alba Arsuaga, se ha mantenido la estructura pero se
+     ha modificado el contenido.
+     **/
     // Método que se encarga de subir la foto sacada
     private void subirFoto(){
         // Creamos la petición POST
@@ -133,6 +139,29 @@ public class Camara extends AppCompatActivity  {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
     }
+    // Recoger imagen y ponerla en una ImageView
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            bitmap = (Bitmap) extras.get("data");
+            foto.setImageBitmap(bitmap);
+        }
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            Uri filePath = data.getData();
+            try {
+                // Obtenemos el mapa de bits de la Galería
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+                // Definimos la configuración del mapa de bits en ImageView
+                foto.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     // Método para abrir la cámara
     private void abrirCamara() {
@@ -147,31 +176,5 @@ public class Camara extends AppCompatActivity  {
         Intent elIntentFoto= new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Código para distinguir la llamada 1
         startActivityForResult(elIntentFoto, 1);
-
-    }
-
-
-    // Recoger imagen y ponerla en una ImageView
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == 1 && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            bitmap = (Bitmap) extras.get("data");
-            foto.setImageBitmap(bitmap);
-        }
-
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            Uri filePath = data.getData();
-            try {
-                //Cómo obtener el mapa de bits de la Galería
-                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
-                //Configuración del mapa de bits en ImageView
-                foto.setImageBitmap(bitmap);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 }
