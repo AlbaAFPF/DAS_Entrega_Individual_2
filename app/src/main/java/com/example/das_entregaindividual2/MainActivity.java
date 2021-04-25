@@ -2,6 +2,9 @@ package com.example.das_entregaindividual2;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,6 +14,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -19,11 +23,18 @@ public class MainActivity extends AppCompatActivity {
     ListView ListViewItem;
     List<ItemListViewPers> list;
 
+    // Instanciamos el administrador de alarmas y la acción que se va a ejecutar
+    private AlarmManager alarmMgr = null;
+    private PendingIntent alarmIntent = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Ejecutamos el método para la alarma
+        setAlarm(this);
 
         // Asignamos los id a las variables
         ListViewItem = findViewById(R.id.ListViewItem);
@@ -77,4 +88,37 @@ public class MainActivity extends AppCompatActivity {
         // Devolvemos la lista
         return list;
     }
+
+
+    // Método para la fijación de la alarma
+    private void setAlarm(Context context){
+        // Cargamos lo que se ejecutará cuando "salte" la alarma
+        Intent intent = new Intent(context, RecAlarma.class);
+        // Instanciamos un administrador de alarmas
+        alarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+
+        // Fijamos que la alarma se dispare a las 9 de la noche
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, 21);
+
+        // Indicamos que la alarma se ejecute con el intent creado
+        alarmIntent = PendingIntent.getActivity(context, 0, intent, 0);
+
+        // Iniciamos la alarma repetitiva, pasándole el intent, y fijando que se ejecute cada día
+        alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                AlarmManager.INTERVAL_DAY, alarmIntent);
+
+    }
+
+    // Método para borrar la alarma
+    private void unSetAlarma(){
+        // Si existe el administrador y el intent
+        if (alarmMgr!= null && alarmIntent!=null) {
+            // Cancelar la alarma
+            alarmMgr.cancel(alarmIntent);
+        }
+    }
+
+
 }

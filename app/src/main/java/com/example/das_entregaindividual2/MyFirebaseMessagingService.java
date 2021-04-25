@@ -17,8 +17,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     // Método para la recepción de mensajes
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        // Al seleccionar la notificación recibida, se abre la actividad "Registro".
-        Intent intent = new Intent(this, Resgistro.class);
+        // Al seleccionar la notificación recibida, se abre la actividad "Tareas".
+        Intent intent = new Intent(this, Examenes.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 

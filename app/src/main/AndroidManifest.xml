@@ -32,9 +32,12 @@
         android:supportsRtl="true"
         android:theme="@style/Tema.Principal"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Galeria"
-            android:configChanges="screenSize|orientation|keyboardHidden"></activity>
-        <activity android:name=".Camara"
+        <activity android:name=".RecAlarma"></activity>
+        <activity
+            android:name=".Galeria"
+            android:configChanges="screenSize|orientation|keyboardHidden" />
+        <activity
+            android:name=".Camara"
             android:configChanges="screenSize|orientation|keyboardHidden" />
         <activity
             android:name=".Resgistro"
@@ -64,7 +67,6 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
     </application>
 
 </manifest>
