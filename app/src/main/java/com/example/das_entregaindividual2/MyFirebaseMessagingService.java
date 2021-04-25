@@ -16,9 +16,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        // Construir las notificaciones y mostrarlas
-
-        // Se abre esta actividad cuando selecionamos el mensaje
+        // Al seleccionar la notificación recibida, se abre la actividad "Registro".
         Intent intent = new Intent(this, Resgistro.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
@@ -30,14 +28,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 // Definir texto del mensaje
                 .setContentText(remoteMessage.getNotification().getBody())
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                // Set the intent that will fire when the user taps the notification
+                // Marcar el intent que se activará cuando el usuario toque la notificación
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true);
 
         // Mostrar la notificación
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-
-        // notificationId is a unique int for each notification that you must define
         notificationManager.notify(1, builder.build());
     }
 

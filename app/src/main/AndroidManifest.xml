@@ -6,53 +6,64 @@
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-feature android:name="android.hardware.camera2.full" android:required="true"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.camera2.full"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.camera2.full"
+        android:required="true" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
-        android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher"
         android:label=""
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Tema.Principal">
-        <activity android:name=".Resgistro"
+        android:theme="@style/Tema.Principal"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".Galeria"
+            android:configChanges="screenSize|orientation|keyboardHidden"></activity>
+        <activity android:name=".Camara"
+            android:configChanges="screenSize|orientation|keyboardHidden" />
+        <activity
+            android:name=".Resgistro"
             android:theme="@style/Registro">
-
             <intent-filter>
-
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-
             </intent-filter>
-        </activity>
-
-
-        <!-- - A cada actividad le asociamos su estilo personalizado -->
-        <activity android:name=".Login"
-            android:theme="@style/Login"/>
-
-        <activity android:name=".NuevaTarea"
-            android:theme="@style/NuevaTarea"/>
-
-        <activity android:name=".Examenes"
-            android:theme="@style/Examenes"/>
-
-        <activity android:name=".Tareas"
+        </activity> <!-- - A cada actividad le asociamos su estilo personalizado -->
+        <activity
+            android:name=".Login"
+            android:theme="@style/Login" />
+        <activity
+            android:name=".NuevaTarea"
+            android:theme="@style/NuevaTarea" />
+        <activity
+            android:name=".Examenes"
+            android:theme="@style/Examenes" />
+        <activity
+            android:name=".Tareas"
             android:theme="@style/Tareas" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity" />
 
-        </activity>
-
-        <service
-            android:name=".MyFirebaseMessagingService">
+        <service android:name=".MyFirebaseMessagingService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
-
     </application>
 
 </manifest>

@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
     ListView ListViewItem;
     List<ItemListViewPers> list;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +50,14 @@ public class MainActivity extends AppCompatActivity {
                     // Abrimos la aplicación de calendario
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("content://com.android.calendar/time/"));
                     startActivityForResult(intent, 0);
+                }else if(item.nombre=="Cámara"){
+                    // Abrimos la aplicación de calendario
+                    Intent intent = new Intent (view.getContext(), Camara.class);
+                    startActivityForResult(intent, 0);
+                }else if(item.nombre=="Galería"){
+                    // Abrimos la aplicación de calendario
+                    Intent intent = new Intent (view.getContext(), Galeria.class);
+                    startActivityForResult(intent, 0);
                 }
             }
         });
@@ -62,6 +71,9 @@ public class MainActivity extends AppCompatActivity {
         list.add(new ItemListViewPers(1, R.drawable.exam,"Exámenes", "Escribe aquí las fechas de tus exámenes."));
         list.add(new ItemListViewPers(2, R.drawable.homework,"Tareas", "Escribe aquí tus tareas."));
         list.add(new ItemListViewPers(3, R.drawable.calendar,"Calendario", "Apunta recordatorios en el calendario de tu móvil."));
+        list.add(new ItemListViewPers(3, R.drawable.camera,"Cámara", "Realiza fotos de tus apuntes aquí."));
+        list.add(new ItemListViewPers(3, R.drawable.gallery,"Galería", "Revisa las fotos de tus apuntes aquí."));
+
         // Devolvemos la lista
         return list;
     }

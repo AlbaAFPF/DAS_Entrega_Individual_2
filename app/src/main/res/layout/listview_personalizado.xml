@@ -14,8 +14,8 @@
 
         <ImageView
             android:id="@+id/imageViewContacto"
-            android:layout_width="160dp"
-            android:layout_height="174dp"
+            android:layout_width="57dp"
+            android:layout_height="125dp"
             android:layout_weight="20"
             android:padding="10dp"
             tools:srcCompat="@tools:sample/avatars" />
