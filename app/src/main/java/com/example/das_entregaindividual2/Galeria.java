@@ -30,27 +30,31 @@ public class Galeria extends AppCompatActivity {
     ImageView foto;
     EditText nombreFotoB;
 
-    String URL_BAJA_FOTO = "http://192.168.0.112/DAS_Entrega2/bajarFoto.php";
+    // URL del .php para el bajar la foto de la base de datos remota
+    String URL_BAJA_FOTO = "http://ec2-54-167-31-169.compute-1.amazonaws.com/aarsuaga010/WEB/bajarFoto.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.galeria);
 
+        // Asignamos los id a las variables
         foto = (ImageView)findViewById(R.id.imageViewFotoB);
         bajarFoto = (Button) findViewById(R.id.buttonBajar);
         nombreFotoB = (EditText) findViewById(R.id.editTextNombreFotoB);
-
 
         // Bajar la foto y mostrarla al seleccionar el botón
         bajarFoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Toast.makeText(Camara.this, "camara", Toast.LENGTH_LONG).show();
+                // Obtenemos el nombre que ha introducido el usuario en el EditText
                 String nombreFoto = nombreFotoB.getText().toString();
+                // Si el nombre no es vacío
                 if(!nombreFoto.equals("")){
+                    // Bajar la foto con ese nombre (es un campo único en la BD)
                     bajaFoto(v, nombreFoto);
                 }else{
+                    // En caso contrario, se pide al usuario que introduzca un nombre
                     Toast.makeText(Galeria.this, "Introduzca un nombre, por favor.", Toast.LENGTH_LONG).show();
                 }
             }
@@ -59,39 +63,44 @@ public class Galeria extends AppCompatActivity {
 
     // Método que se encarga de bajar la foto seleccionada
     private void bajaFoto(View view, String nombre){
+        // Si se ha introducido un nombre
         if(!nombre.equals("")) {
-
+            // Creamos la petición POST
             StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_BAJA_FOTO, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
+                    // Si obtenemos una cadena vacía, no se ha recuperado la foto correctamente
                     if (response.equals("")) {
-                        Toast.makeText(Galeria.this, "No se ha podido recuperar la imagen", Toast.LENGTH_LONG).show();
+                        // Se informa al usuario del error.
+                        Toast.makeText(Galeria.this, "No se ha podido recuperar la imagen.", Toast.LENGTH_LONG).show();
                     }else{
-                        Toast.makeText(Galeria.this, "Hemos recuperado la imagen", Toast.LENGTH_LONG).show();
+                        // En caso contrario, la imagen se ha recuperado correctamente y se puede mostrar
 
+                        // Decodificamos la imagen
                         byte[] dcd = Base64.decode(response, Base64.DEFAULT);
                         Bitmap newBitmap = BitmapFactory.decodeByteArray(dcd, 0, dcd.length);
-
+                        // Y la mostramos en el ImageView de la interfaz
                         foto.setImageBitmap(newBitmap);
-
                     }
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(Galeria.this, error.toString().trim(), Toast.LENGTH_LONG).show();
+                    //Toast.makeText(Galeria.this, error.toString().trim(), Toast.LENGTH_LONG).show();
                 }
             }) {
                 @Override
                 protected Map<String, String> getParams() throws AuthFailureError {
+                    // Creamos un map con el nombre de la imagen y lo devolvemos
                     Map<String, String> data = new HashMap<>();
                     data.put("nombre", nombre);
+
                     return data;
                 }
             };
+            // Creamos la requestQueue y agregar la solicitud a la cola
             RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
             requestQueue.add(stringRequest);
         }
     }
-
 }

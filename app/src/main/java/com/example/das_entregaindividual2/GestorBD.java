@@ -20,7 +20,7 @@ public class GestorBD extends SQLiteOpenHelper {
     // Tabla para la lista de tareas
     private static final String TABLA_ASIG="CREATE TABLE Tareas(Codigo VARCHAR(255), Asignatura VARCHAR(255), Tarea VARCHAR(255))";
     // Tabla para el Login y Registro
-    private static final String TABLA_LOGIN="CREATE TABLE Usuarios(NombreUsuario VARCHAR(255), Contrasena VARCHAR(255))";
+    //private static final String TABLA_LOGIN="CREATE TABLE Usuarios(NombreUsuario VARCHAR(255), Contrasena VARCHAR(255))";
 
 
 
@@ -34,7 +34,7 @@ public class GestorBD extends SQLiteOpenHelper {
         // Tabla para la lista de tareas
         sqLiteDatabase.execSQL(TABLA_ASIG);
         // Tabla para el Login y Registro
-        sqLiteDatabase.execSQL(TABLA_LOGIN);
+        //sqLiteDatabase.execSQL(TABLA_LOGIN);
 
         // Usuario permanente
         sqLiteDatabase.execSQL("INSERT INTO Usuarios (NombreUsuario, Contrasena) VALUES ('user','pass')");
@@ -44,10 +44,10 @@ public class GestorBD extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE Tareas");
-        db.execSQL("DROP TABLE Usuarios");
+        //db.execSQL("DROP TABLE Usuarios");
         onCreate(db);
     }
-
+/*
     // Método para añadir Login
     public void agregarLogin(String nombreUsuario, String contrasena){
         // Para poder trabajar con la BD en modo escritura y lectura.
@@ -103,7 +103,7 @@ public class GestorBD extends SQLiteOpenHelper {
         return coincidencia;
     }
 
-
+*/
     // Método para añadir tareas
     public void anadirTarea(String codigo, String asignatura, String tarea){
         // Para poder trabajar con la BD en modo escritura y lectura.

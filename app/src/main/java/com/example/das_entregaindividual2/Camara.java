@@ -39,15 +39,15 @@ public class Camara extends AppCompatActivity  {
     ImageView foto;
     EditText nombreFoto;
 
+    // Instanciamos el bitmap que utilizaremos para la imagen
     private Bitmap bitmap;
 
+    // Elegimos un código
     private int PICK_IMAGE_REQUEST = 1;
 
     // Path del .php que se encarga de la subida de imágenes
-    private String UPLOAD_URL ="http://192.168.0.112/DAS_Entrega2/subirFoto.php";
+    private String UPLOAD_URL ="http://ec2-54-167-31-169.compute-1.amazonaws.com/aarsuaga010/WEB/subirFoto.php";
 
-    private String KEY_IMAGEN = "foto";
-    private String KEY_NOMBRE = "nombre";
 
 
     @Override
@@ -55,17 +55,17 @@ public class Camara extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.camara);
 
+        // Asignamos los id a las variables
         foto = (ImageView)findViewById(R.id.imageViewFotoB);
         camara = (Button)findViewById(R.id.buttonCamara);
         subirFoto = (Button) findViewById(R.id.buttonBajar);
         nombreFoto = (EditText) findViewById(R.id.editTextNombreFotoB);
 
-
         // Abrir cámara el selecionar el botón
         camara.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Toast.makeText(Camara.this, "camara", Toast.LENGTH_LONG).show();
+                // Llamamos a la función que se encarga de abrir la cámara
                 abrirCamara();
             }
         });
@@ -74,85 +74,68 @@ public class Camara extends AppCompatActivity  {
         subirFoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                uploadImage();
+                // Llamamos a la función que se encarga de subir la foto
+                subirFoto();
             }
         });
 
     }
 
+    // Método para convertir el bitmap en un string en Base64
     public String getStringImagen(Bitmap foto){
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         foto.compress(Bitmap.CompressFormat.PNG, 100, stream);
         byte[] fototransformada = stream.toByteArray();
         String fotoen64 = Base64.encodeToString(fototransformada,Base64.DEFAULT);
-        /*
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        byte[] imageBytes = baos.toByteArray();
-        String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-         */
+
         return fotoen64;
     }
 
-
-    private void uploadImage(){
-        //Mostrar el diálogo de progreso
+    // Método que se encarga de subir la foto sacada
+    private void subirFoto(){
+        // Creamos la petición POST
         StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String s) {
-                        //Mostrando el mensaje de la respuesta
+                        // Si recibimos "success" como respuesta, la petición ha funcionado correctamente y la foto se ha subido
                         if(s.equals("success")){
                             Toast.makeText(Camara.this, "La foto se ha subido correctamente." , Toast.LENGTH_LONG).show();
                         }else{
-                            Toast.makeText(Camara.this, s , Toast.LENGTH_LONG).show();
+                            // Si no, ha ocurrido un error
+                            Toast.makeText(Camara.this, "Ha ocurrido un error.", Toast.LENGTH_LONG).show();
                         }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
-                        //Showing toast
-                        Toast.makeText(Camara.this, volleyError.getMessage().toString(), Toast.LENGTH_LONG).show();
+                        //Toast.makeText(Camara.this, volleyError.getMessage().toString(), Toast.LENGTH_LONG).show();
                     }
                 }){
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                //Convertir bits a cadena
+                // Convertimos el bitmap en un String
                 String imagen = getStringImagen(bitmap);
-
-                //Obtener el nombre de la imagen
+                // Obtenemos el nombre que el usuario ha introducido en el EditText
                 String nombre = nombreFoto.getText().toString().trim();
 
-                //Creación de parámetros
+                // Creamos un map con la foto y el nombre de la foto y lo devolvemos
                 Map<String,String> params = new Hashtable<String, String>();
+                params.put("foto", imagen);
+                params.put("nombre", nombre);
 
-                //Agregando de parámetros
-                params.put(KEY_IMAGEN, imagen);
-                params.put(KEY_NOMBRE, nombre);
-
-                //Parámetros de retorno
                 return params;
             }
         };
 
-        //Creación de una cola de solicitudes
+        // Creamos la requestQueue y agregar la solicitud a la cola
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-
-        //Agregar solicitud a la cola
         requestQueue.add(stringRequest);
     }
 
-    private void showFileChooser() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Imagen"), PICK_IMAGE_REQUEST);
-    }
-
-
+    // Método para abrir la cámara
     private void abrirCamara() {
-
         // Si los permisos oportunos no han sido concedidos, pedirlos
         if (ContextCompat.checkSelfPermission(Camara.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(Camara.this,

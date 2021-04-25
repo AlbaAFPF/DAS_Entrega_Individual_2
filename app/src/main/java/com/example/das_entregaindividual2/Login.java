@@ -39,8 +39,8 @@ public class Login extends AppCompatActivity {
     EditText editTextNombreUsuarioL, editTextContrasenaL;
     Button buttonIniciarSesionL;
 
-
-    private String URL = "http://192.168.0.112/DAS_Entrega2/login.php";
+    // URL del .php para el login en el servidor
+    private String URL = "http://ec2-54-167-31-169.compute-1.amazonaws.com/aarsuaga010/WEB/login.php";
 
     String nombreUsuL, contraL;
 
@@ -62,51 +62,50 @@ public class Login extends AppCompatActivity {
         buttonIniciarSesionL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Toast.makeText(Login.this, "HOLAAA1", Toast.LENGTH_LONG).show();
+                // Llamamos al método que hace el login con la BD remota
                 login(v);
-
             }
-
         });
-
     }
 
     public void login(View view){
-
-        // Obtenemos lo insertado en los editText
+        // Guardamos los editText de la interfaz en variables
         nombreUsuL = editTextNombreUsuarioL.getText().toString();
         contraL = editTextContrasenaL.getText().toString();
 
-        // Si hay datos insertados
+        // Si todos los campos están completos
         if(!nombreUsuL.equals("") && !contraL.equals("")) {
-
+            // Creamos la petición POST
             StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-
+                    // Si recibimos "success" como respuesta, la petición ha funcionado correctamente y hemos iniciado sesión
                     if (response.equals("success")) {
-                        Toast.makeText(Login.this, "HOLAAA3", Toast.LENGTH_LONG).show();
+                        // Abrimos la pantalla del menú principal
                         Intent intent = new Intent(view.getContext(), MainActivity.class);
                         startActivityForResult(intent, 0);
                     }else{
-                        Toast.makeText(Login.this, "La respuesta ha sido: "+response, Toast.LENGTH_LONG).show();
+                        // Si no, ha ocurrido un error.
+                        Toast.makeText(Login.this, "Ha ocurrido un error.", Toast.LENGTH_LONG).show();
                     }
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(Login.this, error.toString().trim(), Toast.LENGTH_LONG).show();
-
+                    //Toast.makeText(Login.this, error.toString().trim(), Toast.LENGTH_LONG).show();
                 }
             }) {
                 @Override
                 protected Map<String, String> getParams() throws AuthFailureError {
+                    // Creamos un map con el nombre de usuario y contraseña y lo devolvemos
                     Map<String, String> data = new HashMap<>();
                     data.put("nombre", nombreUsuL);
                     data.put("contrasena", contraL);
+
                     return data;
                 }
             };
+            // Creamos la requestQueue y agregar la solicitud a la cola
             RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
             requestQueue.add(stringRequest);
         }

@@ -14,6 +14,7 @@ import com.google.firebase.messaging.RemoteMessage;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
+    // Método para la recepción de mensajes
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         // Al seleccionar la notificación recibida, se abre la actividad "Registro".
@@ -39,7 +40,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onNewToken(String s) {
-
     }
 
 }

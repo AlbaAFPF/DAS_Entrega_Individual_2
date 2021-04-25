@@ -2,10 +2,8 @@ package com.example.das_entregaindividual2;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,11 +14,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -42,16 +37,17 @@ import java.util.Map;
 
 public class Resgistro extends AppCompatActivity {
 
-    private static final String CHANNEL_ID = "101";
+
 
     // Instanciamos los objetos para los campos y botones
     EditText editTextNombreUsuario, editTextContrasena, editTextContrasena2;
     Button buttonRegistrarse, buttonIniciarSesion, buttonCambiarIdioma;
 
-    // Instanciamos el gestorDB
-    GestorBD bd;
+    // Variable con el ID del canal de notificaciones
+    private static final String CHANNEL_ID = "101";
 
-    private String URL = "http://192.168.0.112/DAS_Entrega2/registro.php";
+    // URL del .php para el registro en el servidor
+    private String URL = "http://ec2-54-167-31-169.compute-1.amazonaws.com/aarsuaga010/WEB/registro.php";
 
     private String nombreUsu, contra, contra2;
 
@@ -61,7 +57,7 @@ public class Resgistro extends AppCompatActivity {
         fijarIdioma();
         setContentView(R.layout.registro);
 
-        // Crear canal de notificaciones y obtener el token cada vez que se crea el app
+        // Crear canal de notificaciones, obtener el token y suscribirse
         createNotificationChannel();
         getToken();
         suscribirseFCM();
@@ -76,19 +72,13 @@ public class Resgistro extends AppCompatActivity {
 
         buttonCambiarIdioma= (Button)findViewById(R.id.buttonCambiarIdioma);
 
-        bd = new GestorBD(getApplicationContext());
-
-
-
-
-
-
 
         // Botón de registrarse
         buttonRegistrarse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                save(v);
+                // Método para guardar el usuario y la contraseña en la BD remota
+                guardarUsuario(v);
             }
         });
 
@@ -113,90 +103,91 @@ public class Resgistro extends AppCompatActivity {
     }
 
 
-    //----------------------
-    // Obtener el token
+    // Método para la obtención del token
     public void getToken(){
         FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnSuccessListener(new OnSuccessListener<InstanceIdResult>() {
                     @Override
                     public void onSuccess(InstanceIdResult instanceIdResult) {
-                        // El token se muestra en consola al ejecutar la aplicación
+                        // Mostramos el token en consola
                         Log.e("token", instanceIdResult.getToken());
                     }
                 });
     }
 
     // Creamos el canal de notificaciones
-    // https://developer.android.com/training/notify-user/build-notification
     private void createNotificationChannel() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
+        // Creamos el NotificationChannel para API mayores o iguales que 26
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Definimos el nombre y descripción del canal
             CharSequence name = "canalNotificaciones";
             String description = "Canal encargado de recibir las notificaciones de Firebase";
+            // Definimos el nivel de importancia como por defecto
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            // Creamos el NotificationChannel con las especificaciones definidas y el ID
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
+            // Registrar el canal con el sistema
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
     }
 
+    // Método para suscribir al usuario al canal "recordatorios"
     private void suscribirseFCM (){
-        FirebaseMessaging.getInstance().subscribeToTopic("newsletter")
+        FirebaseMessaging.getInstance().subscribeToTopic("recordatorios")
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        Toast.makeText(Resgistro.this, "¡Suscrito!", Toast.LENGTH_SHORT).show();
                     }
                 });
-
-
     }
 
-
-    //----------------------
-
-
-    public void save (View view){
+    // Método para guardar el usuario en la BD remota
+    public void guardarUsuario(View view){
+        // Guardamos los editText de la interfaz en variables
         nombreUsu = editTextNombreUsuario.getText().toString().trim();
         contra = editTextContrasena.getText().toString().trim();
         contra2 = editTextContrasena2.getText().toString().trim();
 
+        // Si las contraseñas introducidas por el usuario son diferentes
         if(!contra.equals(contra2)){
+            // Se le hace saber mediante un mensaje
             Toast.makeText(Resgistro.this, "Las contraseñas no coinciden.", Toast.LENGTH_LONG).show();
 
+        // Si todos los campos están completos
         }else if(!nombreUsu.equals("") && !contra.equals("") && !contra2.equals("")){
-
+            // Creamos la petición POST
             StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    Toast.makeText(Resgistro.this, "AAAAAAAA"+response, Toast.LENGTH_LONG).show();
-
+                    // Si recibimos "success" como respuesta, la petición ha funcionado correctamente y nos hemos registrado
                     if (response.equals("success")) {
+                        // Abrimos la pantalla de login
                         Intent intent = new Intent (view.getContext(), Login.class);
                         startActivityForResult(intent, 0);
                     }else{
-                        Toast.makeText(Resgistro.this, "La respuesta ha sido: "+response, Toast.LENGTH_LONG).show();
+                        // Si no, ha ocurrido un error
+                        Toast.makeText(Resgistro.this, "Ha ocurrido un error.", Toast.LENGTH_LONG).show();
                     }
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(Resgistro.this, error.toString().trim(), Toast.LENGTH_LONG).show();
-
+                    //Toast.makeText(Resgistro.this, error.toString().trim(), Toast.LENGTH_LONG).show();
                 }
             }) {
                 @Override
                 protected Map<String, String> getParams() throws AuthFailureError {
+                    // Creamos un map con el nombre de usuario y contraseña y lo devolvemos
                     Map<String, String> data = new HashMap<>();
                     data.put("nombre", nombreUsu);
                     data.put("contrasena", contra);
+
                     return data;
                 }
             };
+            // Creamos la requestQueue y agregar la solicitud a la cola
             RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
             requestQueue.add(stringRequest);
         }
